@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title th:text="${product.id == null} ? 'Nouveau Produit' : 'Modifier Produit'">Formulaire Produit</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="mb-0">
+                            <i th:class="${product.id == null} ? 'bi bi-plus-circle' : 'bi bi-pencil'"></i>
+                            <span th:text="${product.id == null} ? 'Nouveau Produit' : 'Modifier Produit'">Formulaire</span>
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/products/save}" th:object="${product}" method="post">
+                            <input type="hidden" th:field="*{id}" />
+                            
+                            <div class="mb-3">
+                                <label for="name" class="form-label">
+                                    Nom du produit <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'"
+                                       id="name" 
+                                       th:field="*{name}"
+                                       placeholder="Entrez le nom du produit">
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}">
+                                    <span th:errors="*{name}"></span>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Description</label>
+                                <textarea class="form-control" 
+                                         th:classappend="${#fields.hasErrors('description')} ? 'is-invalid'"
+                                         id="description" 
+                                         th:field="*{description}"
+                                         rows="3"
+                                         placeholder="Entrez la description du produit"></textarea>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('description')}">
+                                    <span th:errors="*{description}"></span>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="price" class="form-label">
+                                        Prix <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">€</span>
+                                        <input type="number" 
+                                               step="0.01" 
+                                               class="form-control" 
+                                               th:classappend="${#fields.hasErrors('price')} ? 'is-invalid'"
+                                               id="price" 
+                                               th:field="*{price}"
+                                               placeholder="0.00">
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('price')}">
+                                            <span th:errors="*{price}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="quantity" class="form-label">
+                                        Quantité <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="number" 
+                                           class="form-control" 
+                                           th:classappend="${#fields.hasErrors('quantity')} ? 'is-invalid'"
+                                           id="quantity" 
+                                           th:field="*{quantity}"
+                                           placeholder="0">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('quantity')}">
+                                        <span th:errors="*{quantity}"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="category" class="form-label">Catégorie</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       th:classappend="${#fields.hasErrors('category')} ? 'is-invalid'"
+                                       id="category" 
+                                       th:field="*{category}"
+                                       list="categoryList"
+                                       placeholder="Sélectionnez ou entrez une catégorie">
+                                <datalist id="categoryList">
+                                    <option th:each="cat : ${categories}" th:value="${cat}"></option>
+                                </datalist>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('category')}">
+                                    <span th:errors="*{category}"></span>
+                                </div>
+                            </div>
+                            
+                            <div class="text-muted mb-3">
+                                <small><span class="text-danger">*</span> Champs obligatoires</small>
+                            </div>
+                            
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <a th:href="@{/products}" class="btn btn-secondary">
+                                    <i class="bi bi-x-circle"></i> Annuler
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i th:class="${product.id == null} ? 'bi bi-save' : 'bi bi-check-circle'"></i>
+                                    <span th:text="${product.id == null} ? 'Créer' : 'Mettre à jour'">Enregistrer</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Help Card -->
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="bi bi-info-circle"></i> Aide
+                        </h5>
+                        <ul class="mb-0">
+                            <li>Le nom du produit doit contenir entre 2 et 100 caractères</li>
+                            <li>La description ne peut pas dépasser 500 caractères</li>
+                            <li>Le prix doit être supérieur à 0</li>
+                            <li>La quantité ne peut pas être négative</li>
+                            <li>Vous pouvez choisir une catégorie existante ou en créer une nouvelle</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div layout:fragment="scripts">
+        <script>
+            // Auto-format price input
+            document.getElementById('price').addEventListener('blur', function() {
+                if (this.value) {
+                    this.value = parseFloat(this.value).toFixed(2);
+                }
+            });
+        </script>
+    </div>
+</body>
+</html>

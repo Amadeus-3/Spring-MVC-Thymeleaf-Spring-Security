@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}">
+<head>
+    <title>Mon Profil</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="mb-0">
+                            <i class="bi bi-person-circle"></i> Mon Profil
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-3 text-center">
+                                <i class="bi bi-person-circle" style="font-size: 6rem;"></i>
+                            </div>
+                            <div class="col-md-9">
+                                <h4 class="mb-3">Informations de l'utilisateur</h4>
+                                
+                                <div class="mb-3">
+                                    <label class="fw-bold">Nom d'utilisateur:</label>
+                                    <p class="text-muted" th:text="${username}">Username</p>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="fw-bold">Rôles:</label>
+                                    <div>
+                                        <span th:each="authority : ${authorities}" 
+                                              class="badge bg-secondary me-2" 
+                                              th:text="${authority.authority}">ROLE</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="fw-bold">État du compte:</label>
+                                    <p><span class="badge bg-success">Actif</span></p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h5 class="mb-3">Actions disponibles</h5>
+                                <div class="d-flex gap-2">
+                                    <a href="/dashboard" class="btn btn-primary">
+                                        <i class="bi bi-speedometer2"></i> Tableau de bord
+                                    </a>
+                                    <a href="/products" class="btn btn-secondary">
+                                        <i class="bi bi-list"></i> Voir les produits
+                                    </a>
+                                    <form th:action="@{/logout}" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-danger">
+                                            <i class="bi bi-box-arrow-right"></i> Déconnexion
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

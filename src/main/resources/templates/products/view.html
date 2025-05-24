@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Détails du Produit</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="mb-0">
+                            <i class="bi bi-box"></i> Détails du Produit
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-3 fw-bold">ID:</div>
+                            <div class="col-md-9" th:text="${product.id}">1</div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-3 fw-bold">Nom:</div>
+                            <div class="col-md-9">
+                                <h4 class="mb-0" th:text="${product.name}">Product Name</h4>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-3 fw-bold">Description:</div>
+                            <div class="col-md-9">
+                                <p class="mb-0" th:text="${product.description}">Product Description</p>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-3 fw-bold">Prix:</div>
+                            <div class="col-md-9">
+                                <span class="badge bg-success fs-5" 
+                                      th:text="${#numbers.formatCurrency(product.price)}">$0.00</span>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-3 fw-bold">Quantité en stock:</div>
+                            <div class="col-md-9">
+                                <span class="fs-5" 
+                                      th:classappend="${product.quantity < 10} ? 'text-danger fw-bold' : 'text-success'"
+                                      th:text="${product.quantity}">0</span>
+                                <span th:if="${product.quantity < 10}" class="badge bg-warning ms-2">
+                                    Stock faible
+                                </span>
+                                <span th:if="${product.quantity == 0}" class="badge bg-danger ms-2">
+                                    Rupture de stock
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-3 fw-bold">Catégorie:</div>
+                            <div class="col-md-9">
+                                <span class="badge bg-secondary fs-6" th:text="${product.category}">Category</span>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-3 fw-bold">Date de création:</div>
+                            <div class="col-md-9" 
+                                 th:text="${#temporals.format(product.createdAt, 'dd/MM/yyyy HH:mm')}">
+                                01/01/2024 12:00
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-3 fw-bold">Dernière modification:</div>
+                            <div class="col-md-9" 
+                                 th:text="${#temporals.format(product.updatedAt, 'dd/MM/yyyy HH:mm')}">
+                                01/01/2024 12:00
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a th:href="@{/products}" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Retour à la liste
+                            </a>
+                            <div>
+                                <a th:href="@{/products/edit/{id}(id=${product.id})}" 
+                                   class="btn btn-warning">
+                                    <i class="bi bi-pencil"></i> Modifier
+                                </a>
+                                <a th:href="@{/products/delete/{id}(id=${product.id})}" 
+                                   class="btn btn-danger"
+                                   onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce produit?');">
+                                    <i class="bi bi-trash"></i> Supprimer
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Statistics Card -->
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="bi bi-graph-up"></i> Statistiques
+                        </h5>
+                        <div class="row text-center">
+                            <div class="col-md-4">
+                                <div class="p-3 bg-light rounded">
+                                    <h6>Valeur du stock</h6>
+                                    <p class="mb-0 fs-5 fw-bold text-primary" 
+                                       th:text="${#numbers.formatCurrency(product.price * product.quantity)}">
+                                        $0.00
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="p-3 bg-light rounded">
+                                    <h6>Prix unitaire</h6>
+                                    <p class="mb-0 fs-5 fw-bold text-success" 
+                                       th:text="${#numbers.formatCurrency(product.price)}">
+                                        $0.00
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="p-3 bg-light rounded">
+                                    <h6>Stock actuel</h6>
+                                    <p class="mb-0 fs-5 fw-bold" 
+                                       th:classappend="${product.quantity < 10} ? 'text-danger' : 'text-info'"
+                                       th:text="${product.quantity + ' unités'}">
+                                        0 unités
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

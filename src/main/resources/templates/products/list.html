@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Liste des Produits</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="row mb-4">
+            <div class="col">
+                <h1 class="h2">
+                    <i class="bi bi-list-ul"></i> Liste des Produits
+                </h1>
+            </div>
+            <div class="col-auto">
+                <a th:href="@{/products/new}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Nouveau Produit
+                </a>
+            </div>
+        </div>
+        
+        <!-- Statistics Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card text-white bg-primary">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Produits</h5>
+                        <p class="card-text display-6" th:text="${totalItems}">0</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-success">
+                    <div class="card-body">
+                        <h5 class="card-title">En Stock</h5>
+                        <p class="card-text display-6" th:text="${#lists.size(products)}">0</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-info">
+                    <div class="card-body">
+                        <h5 class="card-title">Catégories</h5>
+                        <p class="card-text display-6" th:text="${#lists.size(categories)}">0</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-warning">
+                    <div class="card-body">
+                        <h5 class="card-title">Pages</h5>
+                        <p class="card-text display-6" th:text="${totalPages}">0</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Products Table -->
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <a th:href="@{/products(page=${currentPage}, size=10, sortBy='id', sortDir=${reverseSortDir}, search=${search})}"
+                                       class="text-decoration-none text-dark">
+                                        ID
+                                        <i class="bi bi-arrow-down-up"></i>
+                                    </a>
+                                </th>
+                                <th>
+                                    <a th:href="@{/products(page=${currentPage}, size=10, sortBy='name', sortDir=${reverseSortDir}, search=${search})}"
+                                       class="text-decoration-none text-dark">
+                                        Nom
+                                        <i class="bi bi-arrow-down-up"></i>
+                                    </a>
+                                </th>
+                                <th>Description</th>
+                                <th>
+                                    <a th:href="@{/products(page=${currentPage}, size=10, sortBy='price', sortDir=${reverseSortDir}, search=${search})}"
+                                       class="text-decoration-none text-dark">
+                                        Prix
+                                        <i class="bi bi-arrow-down-up"></i>
+                                    </a>
+                                </th>
+                                <th>
+                                    <a th:href="@{/products(page=${currentPage}, size=10, sortBy='quantity', sortDir=${reverseSortDir}, search=${search})}"
+                                       class="text-decoration-none text-dark">
+                                        Quantité
+                                        <i class="bi bi-arrow-down-up"></i>
+                                    </a>
+                                </th>
+                                <th>
+                                    <a th:href="@{/products(page=${currentPage}, size=10, sortBy='category', sortDir=${reverseSortDir}, search=${search})}"
+                                       class="text-decoration-none text-dark">
+                                        Catégorie
+                                        <i class="bi bi-arrow-down-up"></i>
+                                    </a>
+                                </th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${#lists.isEmpty(products)}">
+                                <td colspan="7" class="text-center py-4">
+                                    <div class="text-muted">
+                                        <i class="bi bi-inbox display-4"></i>
+                                        <p class="mt-2">Aucun produit trouvé</p>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr th:each="product : ${products}">
+                                <td th:text="${product.id}">1</td>
+                                <td>
+                                    <a th:href="@{/products/view/{id}(id=${product.id})}" 
+                                       class="text-decoration-none fw-bold"
+                                       th:text="${product.name}">Product Name</a>
+                                </td>
+                                <td>
+                                    <span th:text="${#strings.abbreviate(product.description, 50)}"
+                                          th:title="${product.description}">Description</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-success fs-6" 
+                                          th:text="${#numbers.formatCurrency(product.price)}">$0.00</span>
+                                </td>
+                                <td>
+                                    <span th:classappend="${product.quantity < 10} ? 'text-danger fw-bold' : ''"
+                                          th:text="${product.quantity}">0</span>
+                                    <span th:if="${product.quantity < 10}" class="badge bg-warning">
+                                        Stock faible
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary" th:text="${product.category}">Category</span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group" role="group">
+                                        <a th:href="@{/products/view/{id}(id=${product.id})}" 
+                                           class="btn btn-sm btn-info" title="Voir">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a th:href="@{/products/edit/{id}(id=${product.id})}" 
+                                           class="btn btn-sm btn-warning" title="Modifier">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a th:href="@{/products/delete/{id}(id=${product.id})}" 
+                                           class="btn btn-sm btn-danger" title="Supprimer"
+                                           onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce produit?');">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Pagination -->
+                <nav th:if="${totalPages > 1}" aria-label="Pagination">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                            <a class="page-link" 
+                               th:href="@{/products(page=0, size=10, sortBy=${sortBy}, sortDir=${sortDir}, search=${search})}"
+                               tabindex="-1">
+                                <i class="bi bi-chevron-double-left"></i> Première
+                            </a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                            <a class="page-link" 
+                               th:href="@{/products(page=${currentPage - 1}, size=10, sortBy=${sortBy}, sortDir=${sortDir}, search=${search})}"
+                               tabindex="-1">
+                                <i class="bi bi-chevron-left"></i> Précédente
+                            </a>
+                        </li>
+                        
+                        <li th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}" 
+                            th:if="${pageNum >= currentPage - 2 and pageNum <= currentPage + 2}"
+                            class="page-item" 
+                            th:classappend="${pageNum == currentPage} ? 'active'">
+                            <a class="page-link" 
+                               th:href="@{/products(page=${pageNum}, size=10, sortBy=${sortBy}, sortDir=${sortDir}, search=${search})}"
+                               th:text="${pageNum + 1}">1</a>
+                        </li>
+                        
+                        <li class="page-item" th:classappend="${currentPage >= totalPages - 1} ? 'disabled'">
+                            <a class="page-link" 
+                               th:href="@{/products(page=${currentPage + 1}, size=10, sortBy=${sortBy}, sortDir=${sortDir}, search=${search})}">
+                                Suivante <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage >= totalPages - 1} ? 'disabled'">
+                            <a class="page-link" 
+                               th:href="@{/products(page=${totalPages - 1}, size=10, sortBy=${sortBy}, sortDir=${sortDir}, search=${search})}">
+                                Dernière <i class="bi bi-chevron-double-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                
+                <div class="text-center text-muted">
+                    Page <span th:text="${currentPage + 1}">1</span> sur <span th:text="${totalPages}">1</span>
+                    - Total: <span th:text="${totalItems}">0</span> produits
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

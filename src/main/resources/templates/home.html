@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Spring MVC with Thymeleaf</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .welcome-box {
+            background-color: #e8f4f8;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #007bff;
+            padding: 10px 20px;
+            border: 1px solid #007bff;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        .nav-links a:hover {
+            background-color: #007bff;
+            color: white;
+        }
+        .logout-form {
+            display: inline-block;
+        }
+        .logout-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .logout-btn:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Welcome to Spring MVC with Thymeleaf</h1>
+        </div>
+        
+        <div class="welcome-box">
+            <div sec:authorize="isAuthenticated()">
+                <h2>Hello, <span th:text="${username}">User</span>!</h2>
+                <p>You are successfully logged in.</p>
+            </div>
+            <div sec:authorize="!isAuthenticated()">
+                <h2>Welcome, Guest!</h2>
+                <p>Please log in to access more features.</p>
+            </div>
+        </div>
+        
+        <div class="nav-links">
+            <div sec:authorize="!isAuthenticated()">
+                <a href="/login">Login</a>
+            </div>
+            <div sec:authorize="isAuthenticated()">
+                <a href="/dashboard">Dashboard</a>
+                <form class="logout-form" th:action="@{/logout}" method="post">
+                    <button type="submit" class="logout-btn">Logout</button>
+                </form>
+            </div>
+        </div>
+        
+        <div style="margin-top: 40px; text-align: center;">
+            <h3>Features</h3>
+            <ul style="text-align: left; display: inline-block;">
+                <li>Spring MVC for web framework</li>
+                <li>Thymeleaf for templating</li>
+                <li>Spring Security for authentication</li>
+                <li>Responsive design</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
